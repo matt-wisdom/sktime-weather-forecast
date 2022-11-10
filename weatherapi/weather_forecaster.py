@@ -98,7 +98,7 @@ def generate_ts_classification_data(
     length = len(df)
     idx = list(range(window + 1, length - window))
     for i in idx:
-        prev = df.iloc[i - window - 1:i - 1]
+        prev = df.iloc[i - window - 1: i - 1]
         X.append(
             [
                 prev.tempmax.values,

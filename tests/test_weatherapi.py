@@ -19,6 +19,7 @@ def test_view():
             assert len(forecast) == 5
             assert isinstance(forecast[-1], str)
 
+
 def test_index():
     with app.test_client() as c:
         r = c.get("/")

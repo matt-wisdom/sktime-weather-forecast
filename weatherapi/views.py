@@ -10,7 +10,7 @@ from weatherapi.scraper import scrape
 from weatherapi.weather_forecaster import main_forecaster
 
 app = flask.Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'filesystem', 'CACHE_DIR': '/tmp/weatherapi'})
+cache = Cache(app, config={"CACHE_TYPE": "filesystem", "CACHE_DIR": "/tmp/weatherapi"})
 limiter = Limiter(app, key_func=get_remote_address, default_limits=["16/minute"])
 
 with app.app_context():
@@ -18,7 +18,8 @@ with app.app_context():
     cache.clear()
 
 lag = 1500
-cache_time = 8*3600 # Cache city prediction for 8 hours
+cache_time = 8 * 3600  # Cache city prediction for 8 hours
+
 
 @cache.memoize(cache_time)
 def predict(location):
@@ -28,12 +29,17 @@ def predict(location):
     forecast = main_forecaster(data)
     return forecast
 
+
 @app.get("/")
 def index():
     return flask.render_template("index.html")
 
+
 @app.get("/weather/<location>")
 def getweather(location: str):
     forecast = predict(location)
-    dates = [datetime.date.fromtimestamp(time.time()+i*86400).isoformat() for i in range(7)]
+    dates = [
+        datetime.date.fromtimestamp(time.time() + i * 86400).isoformat()
+        for i in range(7)
+    ]
     return flask.jsonify({"data": forecast.to_numpy().tolist(), "dates": dates})
