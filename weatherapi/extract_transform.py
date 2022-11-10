@@ -11,8 +11,9 @@ url += "key=ZMM2U9XUSJ6UV37L4L49NQACY&options=preview&contentType=json"
 
 
 def scrape_location(location: str, lag: int = 120) -> list:  # 120days
-    # if os.getenv("TESTING") == "1":
-    #     json.load(open("bch.json"))["data"]
+    """
+        Get location data
+    """
     days_data = []
     # Convert lag from days to seconds
     lag = lag * 86400

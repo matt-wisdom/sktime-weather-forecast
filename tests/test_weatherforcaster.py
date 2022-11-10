@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sktime.classification.distance_based import KNeighborsTimeSeriesClassifier
 
-from weatherapi.scraper import scrape
+from weatherapi.extract_transform import scrape
 from weatherapi.weather_forecaster import *
 
 df = scrape("Random", 500)
@@ -34,9 +34,8 @@ def test_create_condition_predictor():
     pred, le, data = create_condition_predictor(df)
     assert isinstance(pred, KNeighborsTimeSeriesClassifier)
     assert (
-        le.
-        inverse_transform(data.condition_labels)
-        .tolist() == df["conditions"].to_list()
+        le.inverse_transform(data.condition_labels).tolist()
+        == df["conditions"].to_list()
     )
 
 

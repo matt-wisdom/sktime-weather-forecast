@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from weatherapi.scraper import preprocess_data, scrape_location
+from weatherapi.extract_transform import preprocess_data, scrape_location
 
 
 @pytest.mark.parametrize(("location", "lagperiod"), [["Bauchi", 2], ["Lokoja", 10]])
