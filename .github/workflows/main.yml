@@ -49,4 +49,4 @@ jobs:
         uses: koyeb-community/koyeb-actions@v2
         with:
           api_token: "${{ secrets.KOYEB_TOKEN }}"
-        - run: koyeb app init weatherapi --docker "ghcr.io/$GHCR_USER/weatherapi:prod" --ports 5000:http --routes /:5000 --docker-private-registry-secret gh-cred
+      - run: koyeb app init weatherapi --docker "ghcr.io/$GHCR_USER/weatherapi:prod" --ports 5000:http --routes /:5000 --docker-private-registry-secret gh-cred
