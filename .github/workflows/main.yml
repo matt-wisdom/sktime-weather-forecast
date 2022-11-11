@@ -1,0 +1,71 @@
+name: Tests
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GHCR_USER: "matt-wisdom"
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10']
+        poetry-version: ['1.1.13']
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tests
+        run: poetry run pytest --cov=./ --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+  code-quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10']
+        poetry-version: ['1.1.13']
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Run isort
+        run: poetry run isort . --check-only
+      - name: Run flake8
+        run: poetry run flake8 .
+      - name: Run bandit
+        run: poetry run bandit .
+      - name: Docker build
+        run: docker build --rm=false --build-arg COMMIT_ID=$GITHUB_SHA -t ghcr.io/$GHCR_USER/weatherapi:prod .
+      - name: Docker login
+        run: echo "$GHCR_TOKEN" | docker login ghcr.io -u $GHCR_USER --password-stdin
+      - name: Docker push
+        run: docker push ghcr.io/$GHCR_USER/weatherapi:prod 
+      - name: Deploy on Koyeb
+        uses: koyeb-community/koyeb-actions@v2
+        with:
+          api_token: "${{ secrets.KOYEB_TOKEN }}"
+#      - run: koyeb services redeploy ${{ secrets.KOYEB_SERVICE_ID }}
+     - run: koyeb app init weatherapi --docker "ghcr.io/$GHCR_USER/weatherapi:prod" --ports 5000:http --routes /:5000 --docker-private-registry-secret gh-cred
