@@ -44,7 +44,7 @@ jobs:
       - name: Docker login
         run: echo "$GHCR_TOKEN" | docker login ghcr.io -u $GHCR_USER --password-stdin
       - name: Docker push
-        run: docker push ghcr.io/$GHCR_USER/weatherapi:prod 
+        run: docker push ghcr.io/$GHCR_USER/weatherapi:prod
       - name: Deploy on Koyeb
         uses: koyeb-community/koyeb-actions@v2
         with:
