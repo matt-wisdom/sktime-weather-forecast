@@ -10,14 +10,14 @@ url += "/timeline/{location}/{date}/2022-11-16?unitGroup=metric&"
 url += "key=ZMM2U9XUSJ6UV37L4L49NQACY&options=preview&contentType=json"
 
 
-def scrape_location(location: str, lag: int = 120) -> list:  # 120days
+def scrape_location(location: str, days_span: int = 120) -> list:  # 120days
     """
         Get location data
     """
     days_data = []
     # Convert lag from days to seconds
-    lag = lag * 86400
-    date = datetime.date.fromtimestamp(time.time() - lag).isoformat()
+    days_span = days_span * 86400
+    date = datetime.date.fromtimestamp(time.time() - days_span).isoformat()
     try:
         data = requests.get(url.format(location=location, date=date)).json()
     except requests.exceptions.JSONDecodeError:
@@ -70,7 +70,7 @@ def preprocess_data(days_data: list) -> pd.DataFrame:
     return df
 
 
-def scrape(location: str, lag: int) -> pd.DataFrame:
-    days_data = scrape_location(location, lag)
+def scrape(location: str, days_span: int) -> pd.DataFrame:
+    days_data = scrape_location(location, days_span)
     if days_data:
         return preprocess_data(days_data)

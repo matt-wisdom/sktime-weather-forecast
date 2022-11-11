@@ -17,13 +17,13 @@ with app.app_context():
     # Clear cache on first run
     cache.clear()
 
-lag = 1500
+days_span = 1500  # No of days of weather data to scraoe
 cache_time = 8 * 3600  # Cache city prediction for 8 hours
 
 
 @cache.memoize(cache_time)
 def predict(location):
-    data = scrape(location, lag)
+    data = scrape(location, days_span)
     if data is None:
         flask.abort(flask.Response('{"message": "Invalid Location"}', 400))
     forecast = main_forecaster(data)
