@@ -49,3 +49,7 @@ dist/**
 action_log
 .coverage
 htmlcov/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
